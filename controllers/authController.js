@@ -1,7 +1,7 @@
 const User = require('../models/UserModel')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError } = require('../error')
-const { attachCookiesToResponse } = require('../utils')
+const { attachCookiesToResponse, createTokenUser } = require('../utils')
 
 const register = async (req, res) => {
   const { name, email, password } = req.body
@@ -16,9 +16,9 @@ const register = async (req, res) => {
 
   const role = isFirstUser ? 'admin' : 'user'
 
-  const user = await User.create({ name, email, password, role })
+  const user = await User.create({ name, email, password })
 
-  const tokenUser = { name: user.name, userId: user._id, role: user.role }
+  const tokenUser = createTokenUser(user)
 
   attachCookiesToResponse({ res, user: tokenUser })
 
@@ -40,7 +40,7 @@ const login = async (req, res) => {
     throw new UnauthenticatedError('Invalid email or password')
   }
 
-  const tokenUser = { name: user.name, userId: user._id, role: user.role }
+  const tokenUser = createTokenUser(user)
 
   attachCookiesToResponse({ res, user: tokenUser })
 

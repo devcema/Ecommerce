@@ -3,7 +3,8 @@ const app = express()
 require('express-async-errors')
 const morgan = require('morgan')
 const cookieParser = require('cookie-parser')
-const authRouter = require('./routes/authRouter')
+const authRouter = require('./routes/authRoutes')
+const userRouter = require('./routes/userRoutes')
 
 const connectDb = require('./db/connect')
 require('dotenv').config()
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
   res.send('Welcome gee')
 })
 app.use('/api/v1/auth', authRouter)
+app.use('/api/v1/users', userRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
