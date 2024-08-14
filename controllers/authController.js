@@ -4,7 +4,7 @@ const { BadRequestError, UnauthenticatedError } = require('../error')
 const { attachCookiesToResponse, createTokenUser } = require('../utils')
 
 const register = async (req, res) => {
-  const { name, email, password } = req.body
+  const { name, email, password, role } = req.body
 
   const emailExists = await User.findOne({ email: email })
 
@@ -12,11 +12,11 @@ const register = async (req, res) => {
     throw new BadRequestError('Email already exists')
   }
 
-  const isFirstUser = (await User.countDocuments({})) === 0
+  // const isFirstUser = (await User.countDocuments({})) === 0
 
-  const role = isFirstUser ? 'admin' : 'user'
+  // const role = isFirstUser ? 'admin' : 'user'
 
-  const user = await User.create({ name, email, password })
+  const user = await User.create({ name, email, password, role })
 
   const tokenUser = createTokenUser(user)
 

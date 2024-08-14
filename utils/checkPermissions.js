@@ -1,15 +1,11 @@
 const { UnauthorizedError } = require('../error')
 
 const checkPermissions = (requestUser, resourceUser) => {
-  //   console.log(requestUser)
-  //   console.log(resourceUser)
-  //   console.log(typeof resourceUser)
-
   if (requestUser.role === 'admin') return
 
   if (requestUser.userId === resourceUser.toString()) return
 
-  throw new UnauthorizedError('Not authorized to perform this action')
+  throw new UnauthorizedError(`You don't have permissions to access this resource`)
 }
 
 module.exports = checkPermissions
