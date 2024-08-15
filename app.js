@@ -2,6 +2,11 @@ const express = require('express')
 const app = express()
 require('express-async-errors')
 const morgan = require('morgan')
+const cors = require('cors')
+const xss = require('xss-clean')
+const helmet = require('helmet')
+const sanitize = require('express-mongo-sanitize')
+const rateLimiter = require('express-rate-limit')
 const cookieParser = require('cookie-parser')
 const authRouter = require('./routes/authRoutes')
 const userRouter = require('./routes/userRoutes')
@@ -16,6 +21,16 @@ require('dotenv').config()
 const notFoundMiddleware = require('./middlewares/not-found')
 const errorHandlerMiddleware = require('./middlewares/error')
 
+app.use(cors())
+app.use(
+  rateLimiter({
+    windowsMs: 15 * 60 * 1000,
+    max: 60,
+  }),
+)
+app.use(helmet())
+app.use(xss())
+app.use(sanitize())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.json())
 app.use(morgan('tiny'))
